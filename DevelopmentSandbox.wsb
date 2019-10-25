@@ -1,0 +1,11 @@
+<Configuration>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\work\WindowsSandbox\DevelopmentSandboxShare</HostFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+   <Command>powershell -noexit -executionpolicy bypass -File C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\DeveloperSandboxSetup.ps1</Command>
+  </LogonCommand>
+</Configuration>
