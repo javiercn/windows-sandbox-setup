@@ -237,6 +237,17 @@ Out-File vs.preview.json -InputObject $installerJson;
 
 Pop-Location
 
+Register-ScheduledJob -Name InitGit -ScriptBlock {
+    git config --global user.name sandbox
+    git config --global user.email "sandbox@example.com"
+} -RunNow;
+
+Start-Sleep -Seconds 2;
+Get-Job InitGit | Wait-Job | Receive-Job;
+
+mkdir $env:USERPROFILE\Documents\Powershell;
+Copy-Item C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\Microsoft.PowerShell_profile.ps1 $env:USERPROFILE\Documents\Powershell\Microsoft.PowerShell_profile.ps1
+
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Force;
 
 Register-ScheduledJob -Name InstallDotNetNightly -ScriptBlock {

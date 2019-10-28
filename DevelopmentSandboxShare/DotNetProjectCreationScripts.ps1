@@ -25,6 +25,12 @@ dotnet new web -o .\EmptyApp\EmptyApp;
 Push-Location EmptyApp;
 dotnet new sln;
 dotnet sln add .\EmptyApp;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Razor pages
@@ -32,6 +38,12 @@ dotnet new webapp -o .\RazorPagesNoAuth\RazorPagesNoAuth;
 Push-Location RazorPagesNoAuth;
 dotnet new sln;
 dotnet sln add .\RazorPagesNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Razor pages with Identity and local DB
@@ -39,6 +51,12 @@ dotnet new webapp -au Individual -uld -o .\RazorPagesIndividualLocalDb\RazorPage
 Push-Location RazorPagesIndividualLocalDb;
 dotnet new sln;
 dotnet sln add .\RazorPagesIndividualLocalDb;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Razor pages with Identity and SQL lite
@@ -46,6 +64,12 @@ dotnet new webapp -au Individual -o .\RazorPagesIndividualSqlLite\RazorPagesIndi
 Push-Location RazorPagesIndividualSqlLite;
 dotnet new sln;
 dotnet sln add .\RazorPagesIndividualSqlLite;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Razor pages with Razor class library
@@ -56,6 +80,12 @@ dotnet new sln;
 dotnet sln add .\RazorPagesWithClassLib;
 dotnet sln add .\RazorClassLibPagesAndViews;
 dotnet add .\RazorPagesWithClassLib reference .\RazorClassLibPagesAndViews;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # MVC
@@ -63,6 +93,12 @@ dotnet new mvc -o .\MvcNoAuth\MvcNoAuth;
 Push-Location MvcNoAuth;
 dotnet new sln;
 dotnet sln add .\MvcNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # MVC with Identity and local DB
@@ -70,6 +106,12 @@ dotnet new mvc -au Individual -uld -o .\MvcIndividualLocalDb\MvcIndividualLocalD
 Push-Location MvcIndividualLocalDb;
 dotnet new sln;
 dotnet sln add .\MvcIndividualLocalDb;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # MVC with Identity and SQL lite
@@ -77,6 +119,12 @@ dotnet new mvc -au Individual -o .\MvcIndividualSqlLite\MvcIndividualSqlLite;
 Push-Location MvcIndividualSqlLite;
 dotnet new sln;
 dotnet sln add .\MvcIndividualSqlLite;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # MVC with Razor class library
@@ -87,6 +135,12 @@ dotnet new sln;
 dotnet sln add .\MvcWithClassLib;
 dotnet sln add .\RazorClassLibPagesAndViews;
 dotnet add .\MvcWithClassLib reference .\RazorClassLibPagesAndViews;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Server-side Blazor
@@ -94,6 +148,12 @@ dotnet new blazorserver -o .\BlazorServerNoAuth\BlazorServerNoAuth;
 Push-Location BlazorServerNoAuth;
 dotnet new sln;
 dotnet sln add .\BlazorServerNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Server-side Blazor with Identity and local DB
@@ -101,6 +161,12 @@ dotnet new blazorserver -au Individual -uld -o .\BlazorServerIndividualLocalDb\B
 Push-Location BlazorServerIndividualLocalDb;
 dotnet new sln;
 dotnet sln add .\BlazorServerIndividualLocalDb;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Server-side Blazor with Identity and SQL lite
@@ -108,6 +174,12 @@ dotnet new blazorserver -au Individual -o .\BlazorServerIndividualSqlLite\Blazor
 Push-Location BlazorServerIndividualSqlLite;
 dotnet new sln;
 dotnet sln add .\BlazorServerIndividualSqlLite;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Server-side Blazor with Razor class library
@@ -118,6 +190,12 @@ dotnet new sln;
 dotnet sln add .\BlazorServerWithClassLib;
 dotnet sln add .\RazorClassLibNoPages;
 dotnet add .\BlazorServerWithClassLib reference .\RazorClassLibNoPages;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Angular
@@ -125,6 +203,12 @@ dotnet new angular -o .\AngularNoAuth\AngularNoAuth;
 Push-Location AngularNoAuth;
 dotnet new sln;
 dotnet sln add .\AngularNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Angular with Identity and local DB
@@ -132,6 +216,12 @@ dotnet new angular -au Individual -uld -o .\AngularIndividualLocalDb\AngularIndi
 Push-Location AngularIndividualLocalDb;
 dotnet new sln;
 dotnet sln add .\AngularIndividualLocalDb;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # Angular with Identity and SQL lite
@@ -139,6 +229,12 @@ dotnet new angular -au Individual -o .\AngularIndividualSqlLite\AngularIndividua
 Push-Location AngularIndividualSqlLite;
 dotnet new sln;
 dotnet sln add .\AngularIndividualSqlLite;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # React
@@ -146,6 +242,12 @@ dotnet new react -o .\ReactNoAuth\ReactNoAuth;
 Push-Location ReactNoAuth;
 dotnet new sln;
 dotnet sln add .\ReactNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # React with Identity and local DB
@@ -153,6 +255,12 @@ dotnet new react -au Individual -uld -o .\ReactIndividualLocalDb\ReactIndividual
 Push-Location ReactIndividualLocalDb;
 dotnet new sln;
 dotnet sln add .\ReactIndividualLocalDb;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # React with Identity and SQL lite
@@ -160,6 +268,12 @@ dotnet new react -au Individual -o .\ReactIndividualSqlLite\ReactIndividualSqlLi
 Push-Location ReactIndividualSqlLite;
 dotnet new sln;
 dotnet sln add .\ReactIndividualSqlLite;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 # ReactRedux
@@ -167,6 +281,12 @@ dotnet new reactredux -o .\ReactReduxNoAuth\ReactReduxNoAuth;
 Push-Location ReactReduxNoAuth;
 dotnet new sln;
 dotnet sln add .\ReactReduxNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
 Pop-Location;
 
 if ($BlazorWasmVersion -ne "") {
@@ -182,10 +302,22 @@ if ($BlazorWasmVersion -ne "") {
     Push-Location BlazorWasmStandalone;
     dotnet new sln;
     dotnet sln add .\BlazorWasmStandalone;
+    dotnet new gitignore;
+    git init;
+    git add .gitignore;
+    git commit -m "Add .gitignore";
+    git add .;
+    git commit -m "Initial commit";
     Pop-Location;
 
     # Blazor wasm hosted
     dotnet new blazorwasm -ho -o .\BlazorWasmHosted\BlazorWasmHosted;
+    dotnet new gitignore;
+    git init;
+    git add .gitignore;
+    git commit -m "Add .gitignore";
+    git add .;
+    git commit -m "Initial commit";
 }
 
 # Leaves $repos
