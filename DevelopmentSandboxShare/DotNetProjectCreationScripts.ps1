@@ -33,6 +33,19 @@ git add .;
 git commit -m "Initial commit";
 Pop-Location;
 
+# Web API template
+dotnet new web -o .\WebApiNoAuth\WebApiNoAuth;
+Push-Location WebApiNoAuth;
+dotnet new sln;
+dotnet sln add .\WebApiNoAuth;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
+Pop-Location;
+
 # Razor pages
 dotnet new webapp -o .\RazorPagesNoAuth\RazorPagesNoAuth;
 Push-Location RazorPagesNoAuth;
@@ -311,7 +324,7 @@ if ($BlazorWasmVersion -ne "") {
     Pop-Location;
 
     # Blazor wasm hosted
-    dotnet new blazorwasm -ho -o .\BlazorWasmHosted\BlazorWasmHosted;
+    dotnet new blazorwasm -ho -o .\BlazorWasmHosted;
     dotnet new gitignore;
     git init;
     git add .gitignore;

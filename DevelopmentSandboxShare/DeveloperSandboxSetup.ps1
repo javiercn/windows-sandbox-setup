@@ -218,6 +218,7 @@ Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://cho
 
 choco install pwsh -y
 choco install msbuild-structured-log-viewer -y
+choco install sysinternals -y
 choco install fiddler -y
 choco install ilspy -y
 choco install nodejs -y

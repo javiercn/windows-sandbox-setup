@@ -1,4 +1,12 @@
-Install-Module -Name ClipboardText -Force
+if ((-not ("Test-Path $env:USERPROFILE\.sandbox\sentinel.txt"))) {
+  Get-Date | Out-File "$env:USERPROFILE\.sandbox\sentinel.txt";
+  Install-Module ClipboardText -Scope CurrentUser -AllowPrerelease -Force;
+  Install-Module posh-git -Scope CurrentUser -AllowPrerelease -Force;
+}
+else {
+  Import-Module ClipboardText;
+  Import-Module posh-git;
+}
 
 Push-Location "$env:USERPROFILE\source\repos\"
 
@@ -7,7 +15,7 @@ function Export-FromSandbox([string] $Path) {
   [System.Convert]::ToBase64String($Content) | Set-ClipboardText;
 }
 
-function Export-Sample([string] $Path){
+function Export-Sample([string] $Path) {
   $fullPath = Resolve-Path $Path;
   Push-Location $fullPath;
   git add .;
