@@ -325,12 +325,14 @@ if ($BlazorWasmVersion -ne "") {
 
     # Blazor wasm hosted
     dotnet new blazorwasm -ho -o .\BlazorWasmHosted;
+    Push-Location BlazorWasmHosted;
     dotnet new gitignore;
     git init;
     git add .gitignore;
     git commit -m "Add .gitignore";
     git add .;
     git commit -m "Initial commit";
+    Pop-Location BlazorWasmHosted;
 }
 
 # Leaves $repos

@@ -1,10 +1,14 @@
-if ((-not ("Test-Path $env:USERPROFILE\.sandbox\sentinel.txt"))) {
-  Get-Date | Out-File "$env:USERPROFILE\.sandbox\sentinel.txt";
-  Install-Module ClipboardText -Scope CurrentUser -AllowPrerelease -Force;
-  Install-Module posh-git -Scope CurrentUser -AllowPrerelease -Force;
+if ((Get-InstalledModule | Where-Object { $_.Name -eq "ClipboardText" } | Measure-Object).Count -eq 0) {
+  Install-Module ClipboardText -AllowPrerelease -Force;
 }
 else {
   Import-Module ClipboardText;
+}
+
+if ((Get-InstalledModule | Where-Object { $_.Name -eq "posh-git" } | Measure-Object).Count -eq 0) {
+  Install-Module posh-git -AllowPrerelease -Force;
+}
+else {
   Import-Module posh-git;
 }
 
