@@ -1,7 +1,7 @@
 Set-ExecutionPolicy Bypass -Scope Process -Force;
 
 $visualStudioSetup = @'
-`<#
+<#
 .SYNOPSIS
     Installs or updates Visual Studio on a local developer machine.
 .DESCRIPTION
@@ -31,7 +31,7 @@ $visualStudioSetup = @'
     To install VS 2019 Enterprise, run this command in PowerShell:
 
         .\InstallVisualStudio.ps1
-#>`
+#>
 param(
     [ValidateSet('BuildTools','Community', 'Professional', 'Enterprise')]
     [string]$Edition = 'Enterprise',
@@ -209,9 +209,7 @@ $installerJson = @'
       "Microsoft.VisualStudio.Workload.NativeDesktop",
       "Microsoft.VisualStudio.Workload.NetCoreTools",
       "Microsoft.VisualStudio.Workload.NetWeb",
-      "Microsoft.VisualStudio.Workload.VisualStudioExtension",
-      "Microsoft.VisualStudio.Workload.Python",
-      "Component.CPython2.x64"
+      "Microsoft.VisualStudio.Workload.VisualStudioExtension"
   ]
 }
 '@
