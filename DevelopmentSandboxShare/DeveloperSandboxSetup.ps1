@@ -274,21 +274,21 @@ $initialText = @'
 This is the developer sandbox for ASP.NET Core.
 This shell is not fully initialized as the path is not correctly set, just open a new shell instance to get the path
 and everything else working properly.
-There is an instance of the most common project types under C:\Users\WDAGUtilityAccount\source\repos\`<`<version>`>`.
+There is an instance of the most common project types under C:\Users\WDAGUtilityAccount\source\repos\<<version>>.
 Currently we create the projects for the latest released version and the latest nightly version.
 The powershell instance comes with a built-in profile that comes with some handy functions.
-You can run `'Set-VSEnvironment `<`<path>`>``' to set the powershell profile to use a given .NET Core instance. The path
-is optional if you are inside a folder with a `'.dotnet`' subfolder containing a dotnet instance.
+You can run 'Set-VSEnvironment <<path>>' to set the powershell profile to use a given .NET Core instance. The path
+is optional if you are inside a folder with a '.dotnet' subfolder containing a dotnet instance.
 
 All projects are created and git is initialized in them so that if you make changes you can:
 1. Know exactly what you have changed (useful for givin repros/guidance)
 2. Revert the changes so that you can keep using the project for many investigations without fear of leaving something dirty by accident.
 
-Currently the VM doesn`'t map any folder with write permissions, that`'s done for security reasons in case you want to run customer code in it.
-If you want to export a file out of the sandbox there`'s a helper command you can use "Export-FromSandbox" that will Base64 encode the contents
-of any file and copy them to the clipboard. Then from your host app you can use "Import-FromSandbox `<`<destination>`>` to get the file back.
+Currently the VM doesn't map any folder with write permissions, that's done for security reasons in case you want to run customer code in it.
+If you want to export a file out of the sandbox there's a helper command you can use "Export-FromSandbox" that will Base64 encode the contents
+of any file and copy them to the clipboard. Then from your host app you can use "Import-FromSandbox <<destination>> to get the file back.
 
-If you have modified any of the projects and want to produce a zip with a repro for a customer, you can simply call Export-Sample `<`<path>`>` and
+If you have modified any of the projects and want to produce a zip with a repro for a customer, you can simply call Export-Sample <<path>> and
 it will take care of staging the current changes, calling git clean to remove artifacts, zip the contents of the project and copy the zip to the
 clipboard. From there you can simply use Import-FromSandbox to get the zip into your machine.
 
@@ -299,4 +299,6 @@ function Import-FromSandbox([string] $Path){
 }
 '@
 
-Start-Process "C:\Program Files\PowerShell\6\pwsh.exe" -ArgumentList "-noexit", "-c", "Write-Host $initialText" -WorkingDirectory (Resolve-Path "$env:USERPROFILE\source\repos\3.1*");
+Out-File -FilePath "$sandboxWd\README" -InputObject $initialText;
+
+Start-Process "C:\Program Files\PowerShell\6\pwsh.exe" -ArgumentList "-noexit", "-c", "Get-Content $sandboxWd\README" -WorkingDirectory (Resolve-Path "$env:USERPROFILE\source\repos\3.1*");
