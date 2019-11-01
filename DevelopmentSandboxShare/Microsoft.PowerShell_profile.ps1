@@ -15,7 +15,7 @@ else {
 Push-Location "$env:USERPROFILE\source\repos\"
 
 function Export-FromSandbox([string] $Path) {
-  $Content = Get-Content -Encoding Byte -Path $Path
+  $Content = Get-Content -AsByteStream -Path $Path
   [System.Convert]::ToBase64String($Content) | Set-ClipboardText;
 }
 
@@ -29,6 +29,83 @@ function Export-Sample([string] $Path) {
   Get-ChildItem $fullPath -Exclude .git, .gitignore | Compress-Archive -DestinationPath $zipPath;
   Export-FromSandbox $zipPath;
   Pop-Location;
+}
+
+function Expand-Repro (
+  [Parameter(ParameterSetName = "FromZip", Mandatory = $true)]
+  [string]$ZipDownloadUrl,
+  [Parameter(ParameterSetName = "FromGithubRepo", Mandatory = $true)]
+  [string]$CloneUrl,
+  [string]$Name,
+  [string]$ReproExpansionPath = ""
+) {
+  if ($ReproExpansionPath -eq "") {
+    $ReproExpansionPath = "$env:USERPROFILE\source\repos\repros";
+  }
+
+  if ($ZipDownloadUrl -eq "") {
+    if ($Name -eq "") {
+      $Name = ((([Uri]$CloneUrl).LocalPath) -split '/' | Select-Object -Last 1) -replace ".git", "";
+    }
+
+    $repoPath = (Join-Path $ReproExpansionPath $Name);
+    git clone $CloneUrl $repoPath;
+    $targetPath = $repoPath;
+  }
+  else {
+    if ($Name -eq "") {
+      $Name = ((([Uri]$ZipDownloadUrl).LocalPath) -split '/' | Select-Object -Last 1);
+      if ($Name -notlike "*.zip") {
+        $Name = "$Name.zip";
+      }
+    }
+    
+    $zipPath = (Join-Path $ReproExpansionPath $Name);
+    $expandedZipFolder = ($zipPath -replace ".zip", "");
+    Invoke-WebRequest $ZipDownloadUrl -OutFile $zipPath;
+    Expand-Archive $zipPath -DestinationPath $expandedZipFolder;
+    
+    $targetPath = $expandedZipFolder;
+  }
+
+  Invoke-Project $targetPath;
+  
+  Write-Output "Zip download url: $ZipDownloadUrl";
+  Write-Output "Clone url $CloneUrl";
+  Write-Output "Name $Name";
+  Write-Output "Repro expansion path $ReproExpansionPath";
+}
+
+function Invoke-Project([string]$TargetPath) {
+  Push-Location $TargetPath;
+
+  $solutionFolder = Get-ChildItem -Path $TargetPath -File -Recurse -Filter *.sln | Select-Object -First 1 | Select-Object -ExpandProperty DirectoryName;
+  if ($solutionFolder -ne "") {
+    Push-Location $solutionFolder;
+    dotnet build;            
+  }
+
+  $projectFolder = Get-ChildItem -Path $TargetPath -File -Recurse -Filter *.csproj | Select-Object -ExpandProperty DirectoryName;
+  if ($projectFolder.Count -eq 1) {
+    Push-Location $projectFolder;
+    dotnet run;
+  }
+  else {
+    $sites = $projectFolder | Where-Object { 
+      $projectContents = ([xml](Get-ChildItem $_ -Filter *.csproj -File | Select-Object -First 1 | Get-Content));
+      $sdk = $projectContents | Select-Xml "/Project/@sdk" | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty Value;
+      $targetFramework = $projectContents | Select-Xml "//TargetFramework/text()" | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty Value;
+      return $sdk -eq "Microsoft.NET.SDK" -and $targetFramework -like "netcoreapp*"
+    };
+
+    if ($sites.Count -gt 1) {
+      Write-Output "Multiple sites to run";
+    }
+    else {
+      Push-Location ($sites | Select-Object -First 1);
+      dotnet run;
+    }
+  }
 }
 
 function Set-VSEnvironment($BasePath = $null) {
