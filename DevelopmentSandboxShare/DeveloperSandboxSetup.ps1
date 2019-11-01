@@ -224,6 +224,8 @@ choco install ilspy -y
 choco install nodejs -y
 choco install dotnetcore-sdk -y
 choco install googlechrome -y
+choco install firefox -y
+choco install microsoft-edge-insider -y
 choco install vscode -y
 choco install git -y
 
@@ -267,6 +269,24 @@ Start-Sleep -Seconds 2;
 Get-Job InstallDotNetTools | Wait-Job | Receive-Job;
 
 Start-Process (Resolve-Path "$env:USERPROFILE\source\repos\3.1*");
+
+function Set-DnsHostNameAndCertificate([string]$hostName){
+    $createCertCommand = @"
+`$serverCert = New-SelfSignedCertificate -DnsName "$hostName.example.com" -CertStoreLocation "cert:CurrentUser\My";
+`$file = `$serverCert | Export-Certificate -FilePath "$hostName.example.com.cer";
+`$file | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
+"@;
+
+        $createCertCommand | Out-File generateCert.ps1;
+
+        powershell.exe .\generateCert.ps1;
+
+        Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "127.0.0.1    $hostName.example.com"
+        Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "::1          $hostName.example.com"
+}
+
+Set-DnsHostNameAndCertificate "client";
+Set-DnsHostNameAndCertificate "server";
 
 $initialText = @'
 This is the developer sandbox for ASP.NET Core.

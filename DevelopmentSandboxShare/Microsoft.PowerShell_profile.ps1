@@ -31,6 +31,50 @@ function Export-Sample([string] $Path) {
   Pop-Location;
 }
 
+function Set-DnsHostNameAndCertificate([string]$hostName){
+  $createCertCommand = @"
+`$serverCert = New-SelfSignedCertificate -DnsName "$hostName.example.com" -CertStoreLocation "cert:CurrentUser\My";
+`$file = `$serverCert | Export-Certificate -FilePath "$hostName.example.com.cer";
+`$file | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
+"@;
+
+      $createCertCommand | Out-File generateCert.ps1;
+
+      powershell.exe .\generateCert.ps1;
+
+      Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "127.0.0.1    $hostName.example.com"
+      Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "::1          $hostName.example.com"
+}
+
+function Set-ServerEnvironment([string]$hostName, [string]$projectName, [int]$httpPort, [int]$httpsPort){
+
+      $launchSettingsJson = Get-Content .\Properties\launchSettings.json | ConvertFrom-Json;
+      $launchSettingsJson.PSObject.Properties.Remove('iisSettings')
+      $launchSettingsJson.profiles.PSObject.Properties.Remove('IIS Express')
+      $applicationUrl = $launchSettingsJson.profiles."$projectName".applicationUrl;
+      $applicationUrl = $applicationUrl -replace 'localhost:5000', "$hostName.example.com:$httpPort";
+      $applicationUrl = $applicationUrl -replace 'localhost:5001', "$hostName.example.com:$httpsPort";
+      $launchSettingsJson.profiles."$projectName".applicationUrl = $applicationUrl;
+      ConvertTo-Json $launchSettingsJson -Depth 10 | Set-Content .\Properties\launchSettings.json
+
+      $appSettingsDev = Get-Content .\appsettings.Development.json | ConvertFrom-Json;
+      $kestrelCert = @"
+{
+  "Certificates": {
+    "Default": {
+      "Subject": "$hostName.example.com",
+      "Store": "My",
+      "Location": "CurrentUser",
+      "AllowInvalid": "true"
+    }
+  }
+}
+"@;
+
+      $appSettingsDev | Add-Member -NotePropertyName "Kestrel" -NotePropertyValue (ConvertFrom-Json $kestrelCert);
+      ConvertTo-Json $appSettingsDev -Depth 10 | Set-Content .\appsettings.Development.json;
+  }
+
 function Expand-Repro (
   [Parameter(ParameterSetName = "FromZip", Mandatory = $true)]
   [string]$ZipDownloadUrl,
@@ -41,6 +85,9 @@ function Expand-Repro (
 ) {
   if ($ReproExpansionPath -eq "") {
     $ReproExpansionPath = "$env:USERPROFILE\source\repos\repros";
+    if (-not (Test-path $ReproExpansionPath)) {
+      mkdir $ReproExpansionPath | out-null;
+    }
   }
 
   if ($ZipDownloadUrl -eq "") {
@@ -69,11 +116,6 @@ function Expand-Repro (
   }
 
   Invoke-Project $targetPath;
-  
-  Write-Output "Zip download url: $ZipDownloadUrl";
-  Write-Output "Clone url $CloneUrl";
-  Write-Output "Name $Name";
-  Write-Output "Repro expansion path $ReproExpansionPath";
 }
 
 function Invoke-Project([string]$TargetPath) {
@@ -82,29 +124,77 @@ function Invoke-Project([string]$TargetPath) {
   $solutionFolder = Get-ChildItem -Path $TargetPath -File -Recurse -Filter *.sln | Select-Object -First 1 | Select-Object -ExpandProperty DirectoryName;
   if ($solutionFolder -ne "") {
     Push-Location $solutionFolder;
-    dotnet build;            
+    dotnet build;
+    Write-Host "Solution folder found: $solutionFolder";
   }
 
-  $projectFolder = Get-ChildItem -Path $TargetPath -File -Recurse -Filter *.csproj | Select-Object -ExpandProperty DirectoryName;
+  $projectFolder = Get-ChildItem -Path $TargetPath -File -Recurse -Filter "*.csproj" | Select-Object -ExpandProperty DirectoryName;
+  Write-Host "Projects found: $($projectFolder -join ' ')"
+
   if ($projectFolder.Count -eq 1) {
     Push-Location $projectFolder;
     dotnet run;
   }
   else {
-    $sites = $projectFolder | Where-Object { 
-      $projectContents = ([xml](Get-ChildItem $_ -Filter *.csproj -File | Select-Object -First 1 | Get-Content));
-      $sdk = $projectContents | Select-Xml "/Project/@sdk" | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty Value;
-      $targetFramework = $projectContents | Select-Xml "//TargetFramework/text()" | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty Value;
-      return $sdk -eq "Microsoft.NET.SDK" -and $targetFramework -like "netcoreapp*"
-    };
+    $sites = @();
+    foreach ($candidate in $projectFolder) {
+      $found = Resolve-WebSite $candidate;
+      if ($null -ne $found) {
+        $sites += $found;
+      }
+    }
+
+    Write-Host "Sites found: $($sites -join ' ')"
 
     if ($sites.Count -gt 1) {
-      Write-Output "Multiple sites to run";
+      Write-Host "Multiple sites to run";
     }
     else {
-      Push-Location ($sites | Select-Object -First 1);
-      dotnet run;
+      $sites | Push-Location;
+      Invoke-WebSite (resolve-path .\*csproj).Path;
     }
+  }
+}
+
+function Invoke-WebSite ([string]$site) {
+  $tmp = New-TemporaryFile;
+  Start-Process dotnet -ArgumentList "run", "--project", $site -RedirectStandardOutput $tmp -NoNewWindow;
+  Get-Content $tmp -Wait | ForEach-Object {
+    if($_ -match "Now listening on: (http://localhost:\d+)"){
+      Start-Process $Matches[1];
+    }
+    if($_ -match "Application is shutting down..."){
+      break;
+    }
+    $_
+  }
+}
+
+function Resolve-WebSite([string]$candidate) {
+  Write-Host "Examining project folder $candidate";
+  $projectFile = Get-ChildItem $candidate -Filter "*.csproj" -File;
+  if ($projectFile.Count -ne 1) {
+    Write-Host "An unexpected number of project files found '$($projectFile.Count)'";
+    Write-Host $projectFile;
+    return $null;
+  }
+  else {
+    Write-Host "Examining project file $projectFile"
+  }
+  $projectContents = ([xml](Get-Content $projectFile));
+  Write-Host "Project $projectFile contents:"
+  Get-Content $projectFile | Out-Host;
+
+  $sdk = $projectContents | Select-Xml "/Project/@Sdk" | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty Value;
+  Write-Host "Found SDK $sdk";
+
+  $targetFramework = $projectContents | Select-Xml "//TargetFramework/text()" | Select-Object -ExpandProperty Node | Select-Object -ExpandProperty Value;
+  Write-Host "Found target framework $targetFramework";
+  if (($sdk -ieq "Microsoft.NET.Sdk.Web") -and ($targetFramework -like "netcoreapp*")) {
+    return $candidate;
+  }
+  else {
+    return $null;
   }
 }
 

@@ -46,6 +46,29 @@ git add .;
 git commit -m "Initial commit";
 Pop-Location;
 
+# Web API for CORS
+dotnet new webapi -o CorsApplication\CorsServer;
+dotnet new webapp -au Individual -o CorsApplication\CorsClient;
+Push-Location CorsApplication;
+dotnet new sln;
+dotnet sln add .\CorsClient;
+dotnet sln add .\CorsServer;
+dotnet new gitignore;
+git init;
+git add .gitignore;
+git commit -m "Add .gitignore";
+git add .;
+git commit -m "Initial commit";
+Push-Location .\CorsClient;
+Set-ServerEnvironment -hostName "client" -projectName "CorsClient" -httpPort 80 -httpsPort 443;
+Pop-Location;
+Push-Location .\CorsServer;
+Set-ServerEnvironment -hostName "server" -projectName "CorsServer" -httpPort 8080 -httpsPort 8443;
+Pop-Location
+git add .;
+git commit -m "Update for CORS";
+Pop-Location;
+
 # Razor pages
 dotnet new webapp -o .\RazorPagesNoAuth\RazorPagesNoAuth;
 Push-Location RazorPagesNoAuth;
