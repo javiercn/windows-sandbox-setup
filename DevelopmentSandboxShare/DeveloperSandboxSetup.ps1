@@ -260,6 +260,13 @@ Register-ScheduledJob -Name InstallDotNetNightly -ScriptBlock {
 Start-Sleep -Seconds 2;
 Get-Job InstallDotNetNightly | Wait-Job | Receive-Job;
 
+Register-ScheduledJob -Name InstallLatestReleasedPreviewDotNet -ScriptBlock {
+    pwsh.exe -executionpolicy bypass -f C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\InstallLatestReleasedPreviewDotNetAndCreateProjects.ps1 "3.1" # This is for 3.1.1xx on the core-sdk repo
+} -RunNow;
+
+Start-Sleep -Seconds 2;
+Get-Job InstallLatestReleasedPreviewDotNet | Wait-Job | Receive-Job;
+
 Register-ScheduledJob -Name CreateProjects -ScriptBlock { C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\DotNetProjectCreationScripts.ps1 } -RunNow
 Start-Sleep -Seconds 2;
 Get-Job CreateProjects | Wait-Job | Receive-Job;

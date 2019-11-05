@@ -355,7 +355,7 @@ if ($BlazorWasmVersion -ne "") {
     git commit -m "Add .gitignore";
     git add .;
     git commit -m "Initial commit";
-    Pop-Location BlazorWasmHosted;
+    Pop-Location;
 }
 
 # Leaves $repos
