@@ -228,6 +228,8 @@ choco install firefox -y
 choco install microsoft-edge-insider -y
 choco install vscode -y
 choco install git -y
+choco install sharex -y
+choco install ilmerge -y
 
 $sandboxWd = "$env:USERPROFILE\.sandbox\";
 mkdir $sandboxWd;
