@@ -341,4 +341,4 @@ function Import-FromSandbox([string] $Path){
 
 Out-File -FilePath "$sandboxWd\README" -InputObject $initialText;
 
-Start-Process "C:\Program Files\PowerShell\6\pwsh.exe" -ArgumentList "-noexit", "-c", "Get-Content $sandboxWd\README" -WorkingDirectory (Resolve-Path "$env:USERPROFILE\source\repos\3.1*");
+Start-Process "C:\Program Files\PowerShell\6\pwsh.exe" -ArgumentList "-noexit", "-c", "Get-Content $sandboxWd\README" -WorkingDirectory (Resolve-Path "$env:USERPROFILE\source\repos\");
