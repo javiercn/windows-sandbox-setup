@@ -229,6 +229,7 @@ choco install microsoft-edge-insider -y
 choco install vscode -y
 choco install git -y
 choco install sharex -y
+choco install ffmpeg -y
 choco install ilmerge -y
 
 $sandboxWd = "$env:USERPROFILE\.sandbox\";
@@ -296,6 +297,18 @@ function Set-DnsHostNameAndCertificate([string]$hostName){
 
 Set-DnsHostNameAndCertificate "client";
 Set-DnsHostNameAndCertificate "server";
+
+function Register-TrustedLocalhostCertificates() {
+    Get-ChildItem Cert:\CurrentUser\My\ -DnsName 'localhost' |
+        Where-Object FriendlyName -Like '*ASP.NET*' |
+        Export-Certificate -FilePath (New-TemporaryFile) | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
+
+    Get-ChildItem Cert:\LocalMachine\My\ -DnsName 'localhost' |
+        Where-Object FriendlyName -Like '*IIS Express*' |
+        Export-Certificate -FilePath (New-TemporaryFile) | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
+}
+
+Register-TrustedLocalhostCertificates
 
 $initialText = @'
 This is the developer sandbox for ASP.NET Core.
