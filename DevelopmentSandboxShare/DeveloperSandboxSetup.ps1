@@ -236,6 +236,10 @@ $sandboxWd = "$env:USERPROFILE\.sandbox\";
 mkdir $sandboxWd;
 Push-Location $sandboxWd;
 
+if (-not (Test-Path $env:USERPROFILE\source\repos)) {
+    mkdir $env:USERPROFILE\source\repos | Out-Null;
+}
+
 Out-File InstallVisualStudio.ps1 -InputObject $visualStudioSetup;
 Out-File vs.preview.json -InputObject $installerJson;
 
@@ -278,21 +282,21 @@ Register-ScheduledJob -Name InstallDotNetTools -ScriptBlock { C:\Users\WDAGUtili
 Start-Sleep -Seconds 2;
 Get-Job InstallDotNetTools | Wait-Job | Receive-Job;
 
-Start-Process (Resolve-Path "$env:USERPROFILE\source\repos\3.1*");
+Start-Process (Resolve-Path "$env:USERPROFILE\source\repos");
 
-function Set-DnsHostNameAndCertificate([string]$hostName){
+function Set-DnsHostNameAndCertificate([string]$hostName) {
     $createCertCommand = @"
 `$serverCert = New-SelfSignedCertificate -DnsName "$hostName.example.com" -CertStoreLocation "cert:CurrentUser\My";
 `$file = `$serverCert | Export-Certificate -FilePath "$hostName.example.com.cer";
 `$file | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
 "@;
 
-        $createCertCommand | Out-File generateCert.ps1;
+    $createCertCommand | Out-File generateCert.ps1;
 
-        powershell.exe .\generateCert.ps1;
+    powershell.exe .\generateCert.ps1;
 
-        Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "127.0.0.1    $hostName.example.com"
-        Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "::1          $hostName.example.com"
+    Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "127.0.0.1    $hostName.example.com"
+    Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "::1          $hostName.example.com"
 }
 
 Set-DnsHostNameAndCertificate "client";
@@ -300,12 +304,12 @@ Set-DnsHostNameAndCertificate "server";
 
 function Register-TrustedLocalhostCertificates() {
     Get-ChildItem Cert:\CurrentUser\My\ -DnsName 'localhost' |
-        Where-Object FriendlyName -Like '*ASP.NET*' |
-        Export-Certificate -FilePath (New-TemporaryFile) | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
+    Where-Object FriendlyName -Like '*ASP.NET*' |
+    Export-Certificate -FilePath (New-TemporaryFile) | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
 
     Get-ChildItem Cert:\LocalMachine\My\ -DnsName 'localhost' |
-        Where-Object FriendlyName -Like '*IIS Express*' |
-        Export-Certificate -FilePath (New-TemporaryFile) | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
+    Where-Object FriendlyName -Like '*IIS Express*' |
+    Export-Certificate -FilePath (New-TemporaryFile) | Import-Certificate -CertStoreLocation Cert:\CurrentUser\Root\;
 }
 
 Register-TrustedLocalhostCertificates
