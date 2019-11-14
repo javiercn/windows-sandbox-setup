@@ -256,29 +256,29 @@ Start-Sleep -Seconds 2;
 Get-Job InitGit | Wait-Job | Receive-Job;
 
 mkdir $env:USERPROFILE\Documents\Powershell;
-Copy-Item C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\Microsoft.PowerShell_profile.ps1 $env:USERPROFILE\Documents\Powershell\Microsoft.PowerShell_profile.ps1
+Copy-Item $env:USERPROFILE\Desktop\DevelopmentSandboxShare\Microsoft.PowerShell_profile.ps1 $env:USERPROFILE\Documents\Powershell\Microsoft.PowerShell_profile.ps1
 
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Force;
 
 Register-ScheduledJob -Name InstallDotNetNightly -ScriptBlock {
-    pwsh.exe -executionpolicy bypass -f C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\InstallLatestNightlyDotNetAndCreateProjects.ps1 "3.1.1" # This is for 3.1.1xx on the core-sdk repo
+    pwsh.exe -executionpolicy bypass -f $env:USERPROFILE\Desktop\DevelopmentSandboxShare\InstallLatestNightlyDotNetAndCreateProjects.ps1 "3.1.1" # This is for 3.1.1xx on the core-sdk repo
 } -RunNow;
 
 Start-Sleep -Seconds 2;
 Get-Job InstallDotNetNightly | Wait-Job | Receive-Job;
 
 Register-ScheduledJob -Name InstallLatestReleasedPreviewDotNet -ScriptBlock {
-    pwsh.exe -executionpolicy bypass -f C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\InstallLatestReleasedPreviewDotNetAndCreateProjects.ps1 "3.1" # This is for 3.1.1xx on the core-sdk repo
+    pwsh.exe -executionpolicy bypass -f $env:USERPROFILE\Desktop\DevelopmentSandboxShare\InstallLatestReleasedPreviewDotNetAndCreateProjects.ps1 "3.1" # This is for 3.1.1xx on the core-sdk repo
 } -RunNow;
 
 Start-Sleep -Seconds 2;
 Get-Job InstallLatestReleasedPreviewDotNet | Wait-Job | Receive-Job;
 
-Register-ScheduledJob -Name CreateProjects -ScriptBlock { C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\DotNetProjectCreationScripts.ps1 } -RunNow
+Register-ScheduledJob -Name CreateProjects -ScriptBlock { Invoke-Expression $env:USERPROFILE\Desktop\DevelopmentSandboxShare\DotNetProjectCreationScripts.ps1 } -RunNow
 Start-Sleep -Seconds 2;
 Get-Job CreateProjects | Wait-Job | Receive-Job;
 
-Register-ScheduledJob -Name InstallDotNetTools -ScriptBlock { C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\DotNetToolsInstallation.ps1 } -RunNow
+Register-ScheduledJob -Name InstallDotNetTools -ScriptBlock { Invoke-Expression $env:USERPROFILE\Desktop\DevelopmentSandboxShare\DotNetToolsInstallation.ps1 } -RunNow
 Start-Sleep -Seconds 2;
 Get-Job InstallDotNetTools | Wait-Job | Receive-Job;
 
@@ -318,7 +318,7 @@ $initialText = @'
 This is the developer sandbox for ASP.NET Core.
 This shell is not fully initialized as the path is not correctly set, just open a new shell instance to get the path
 and everything else working properly.
-There is an instance of the most common project types under C:\Users\WDAGUtilityAccount\source\repos\<<version>>.
+There is an instance of the most common project types under $env:USERPROFILE\source\repos\<<version>>.
 Currently we create the projects for the latest released version and the latest nightly version.
 The powershell instance comes with a built-in profile that comes with some handy functions.
 You can run 'Set-VSEnvironment <<path>>' to set the powershell profile to use a given .NET Core instance. The path

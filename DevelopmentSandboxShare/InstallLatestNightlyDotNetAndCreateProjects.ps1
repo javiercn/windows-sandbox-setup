@@ -7,7 +7,7 @@ $BlazorWasmVersion = "3.1.0-preview2.*";
 
 $latestVersion = ((Invoke-WebRequest "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/release/$($Branch)xx/latest.version" | Select-Object -ExpandProperty Content) -split "\n" | Where-Object { $_ -like "$Branch*" }).Trim();
 
-C:\Users\WDAGUtilityAccount\Desktop\DevelopmentSandboxShare\dotnet-install.ps1 -version $latestVersion -InstallDir "$env:USERPROFILE\source\repos\$latestVersion\.dotnet";
+Invoke-Expression "$env:USERPROFILE\Desktop\DevelopmentSandboxShare\dotnet-install.ps1 -version $latestVersion -InstallDir $env:USERPROFILE\source\repos\$latestVersion\.dotnet";
 
 $feeds = @"
 <configuration>
