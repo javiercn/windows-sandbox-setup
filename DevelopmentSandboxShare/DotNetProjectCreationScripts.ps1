@@ -34,7 +34,7 @@ git commit -m "Initial commit";
 Pop-Location;
 
 # Web API template
-dotnet new web -o .\WebApiNoAuth\WebApiNoAuth;
+dotnet new webapi -o .\WebApiNoAuth\WebApiNoAuth;
 Push-Location WebApiNoAuth;
 dotnet new sln;
 dotnet sln add .\WebApiNoAuth;
