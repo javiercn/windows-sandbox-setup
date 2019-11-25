@@ -3,11 +3,11 @@ param(
 )
 
 # Change acordingly in previews
-$BlazorWasmVersion = "3.1.0-preview2.*";
+$BlazorWasmVersion = "3.1.0-preview3.*";
 
 $latestVersion = ((Invoke-WebRequest "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/release/$($Branch)xx/latest.version" | Select-Object -ExpandProperty Content) -split "\n" | Where-Object { $_ -like "$Branch*" }).Trim();
 
-Invoke-Expression "$env:USERPROFILE\Desktop\DevelopmentSandboxShare\dotnet-install.ps1 -version $latestVersion -InstallDir $env:USERPROFILE\source\repos\$latestVersion\.dotnet";
+Invoke-Expression "$env:USERPROFILE\Desktop\DevelopmentSandboxShare\dotnet-install.ps1 -version $latestVersion -InstallDir $env:USERPROFILE\source\repos\$latestVersion\.dotnet" -ErrorAction SilentlyContinue;
 
 $feeds = @"
 <configuration>
@@ -19,7 +19,7 @@ $feeds = @"
     <add key="aspnet-entityframeworkcore" value="https://dotnetfeed.blob.core.windows.net/aspnet-entityframeworkcore/index.json" />
     <add key="aspnet-extensions" value="https://dotnetfeed.blob.core.windows.net/aspnet-extensions/index.json" />
     <add key="gRPC repository" value="https://grpc.jfrog.io/grpc/api/nuget/v3/grpc-nuget-dev" />
-    <add key="blazor" value="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet3.1/nuget/v3/index.json" />
+    <add key="dotnet3.1-blazor" value="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet3.1-blazor/nuget/v3/index.json" />
   </packageSources>
 </configuration>
 "@;
